@@ -10,7 +10,7 @@
       "name": "Launch Chrome file",
       "url": "file://${workspaceFolder}/index.html",
       "webRoot": "${workspaceFolder}",
-      "skipFiles": ["lib/p5.*"]
+      "skipFiles": ["lib/p5.*", "lib/d3.*"]
     },
     {
       "type": "chrome",
