@@ -60,6 +60,7 @@ var dataTypes = {
   }
 };
 // Graph creation data
+let graphSim;
 let importData = JSON.parse(JSON.stringify(dataTypes));
 let virginData = { nodes: [], links: [] };
 let graphData = { nodes: [], links: [] };
@@ -125,7 +126,7 @@ function graphPrep() {
     gender: getC(hues.purples, 2),
     age: getC(hues.yellows, 2),
     no_of_friends: getC(hues.blues, 2),
-    first_language: getC(hues.oranges, 2),
+    first_language: getC(hues.violets, 2),
     likes: getC(hues.greens, 2),
     dislikes: getC(hues.reds, 2)
   };
@@ -178,7 +179,23 @@ function graphPrep() {
     }
   }
 
-  // Now Links
+  graphData.links = JSON.parse(JSON.stringify(virginData.links.slice()));
+  graphData.nodes = JSON.parse(JSON.stringify(virginData.nodes.slice()));
+}
+function graphMake() {
+  graphSim = d3
+    .forceSimulation()
+    .force('charge', d3.forceManyBody().strength(-220))
+    .force('center', d3.forceCenter(width / 2, height / 2));
+  graphSim.nodes(graphData.nodes).on('tick');
+  graphSim.force(
+    'link',
+    d3
+      .forceLink(graphData.links)
+      .id(link => link.id)
+      .strength(link => constrain(link.strength - 0.5, 0, 0.05))
+      .distance(50)
+  );
 }
 //
 
@@ -206,22 +223,28 @@ function setup() {
       dataCat(data.val());
       console.log('gotit');
       graphPrep();
+      graphMake();
     },
 
     error => console.log('error getting data' + error)
   );
 }
 function draw() {
-  background(10);
-  if (hasData) background(100);
+  background(getC(hues.neutrals, 4).hex);
+  if (hasData) background(getC(hues.neutrals, 1).hex);
   if (frameCount > 200) {
-    for (let l of virginData.links) {
-      let s = virginData.nodes.find(e => l.source === e.id);
-      let t = virginData.nodes.find(e => l.target === e.id);
+    for (let l of graphData.links) {
+      let s = graphData.nodes.find(e => l.source.id === e.id);
+      let t = graphData.nodes.find(e => l.target.id === e.id);
       if (l.strength < 0.5 + 0.5 * sin(radians(frameCount))) continue;
-      strokeWeight(5 * l.strength);
-      stroke(0, l.strength * 120);
+      strokeWeight(2 * l.strength);
+      stroke(150, l.strength * 64);
       line(s.x, s.y, t.x, t.y);
+    }
+    for (let n of graphData.nodes) {
+      fill(n.fill);
+      noStroke();
+      ellipse(n.x, n.y, 20);
     }
   }
 }
