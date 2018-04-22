@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 declare namespace firebase {
-  type CompleteFn = () => void;
-
   interface FirebaseError {
     code: string;
     message: string;
@@ -1799,4 +1797,4 @@ declare namespace firebase.firestore {
   }
 }
 
-export = firebase;
+export as namespace firebase;

@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6"
+    "target": "ES6",
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "sketch.js",
-    "lib/**/*",
-  ]
+  "include": ["sketch.js", "lib/*", "lib/addons/*"]
 }
